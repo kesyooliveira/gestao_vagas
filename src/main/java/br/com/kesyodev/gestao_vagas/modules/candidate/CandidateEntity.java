@@ -28,7 +28,7 @@ public class CandidateEntity {
     @Email(message="O campo [email] deve conter um e-mail válido.")
     private String email;
 
-    @Length(min = 10, max = 30)
+    @Length(min = 10, max = 300)
     private String password;
 
     private String description;
