@@ -2,10 +2,9 @@ package br.com.kesyodev.gestao_vagas.modules.candidate.controllers;
 
 import br.com.kesyodev.gestao_vagas.modules.candidate.CandidateEntity;
 
-import br.com.kesyodev.gestao_vagas.modules.candidate.useCases.CreateCandidateUseCase;
-import br.com.kesyodev.gestao_vagas.modules.candidate.useCases.DeleteCandidateUseCase;
-import br.com.kesyodev.gestao_vagas.modules.candidate.useCases.ListAllJobsByFilterUseCase;
-import br.com.kesyodev.gestao_vagas.modules.candidate.useCases.ProfileCandidateUseCase;
+import br.com.kesyodev.gestao_vagas.modules.candidate.dto.ProfileCandidateResponseDTO;
+import br.com.kesyodev.gestao_vagas.modules.candidate.entity.ApplyJobEntity;
+import br.com.kesyodev.gestao_vagas.modules.candidate.useCases.*;
 import br.com.kesyodev.gestao_vagas.modules.company.entities.JobEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -27,6 +26,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/candidate")
+@Tag(name="Candidato", description = "Informações do candidato")
 public class CandidateController {
 
     @Autowired
@@ -39,9 +39,19 @@ public class CandidateController {
     private ListAllJobsByFilterUseCase listAllJobsByFilterUseCase;
 
     @Autowired
-    DeleteCandidateUseCase deleteCandidateUseCase;
+    private DeleteCandidateUseCase deleteCandidateUseCase;
+
+    @Autowired
+    private ApplyJobCandidateUseCase applyJobCandidateUseCase;
 
     @PostMapping("/")
+    @Operation(summary = "Cadastro de candidatos.", description = "Essa função é resposável por cadastrar um candidato.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = CandidateEntity.class))
+            }),
+            @ApiResponse(responseCode = "400" ,description = "Usuário já existe.")
+    })
     public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity){
         try{
             var result = this.createCandidateUseCase.execute(candidateEntity);
@@ -53,6 +63,15 @@ public class CandidateController {
 
     @GetMapping("/")
     @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Retorna as informações do perfil do candidato.", description = "Essa função é resposável por listar todas as vagas disponíveis, baseada no filtro.")
+    @SecurityRequirement(name = "jwt_auth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = ProfileCandidateResponseDTO.class))
+            }),
+            @ApiResponse(responseCode = "400" ,description = "User not found.")
+    })
+
     public ResponseEntity<Object> get(HttpServletRequest request){
 
         var idCandidate = request.getAttribute("candidate_id");
@@ -67,7 +86,6 @@ public class CandidateController {
 
     @GetMapping("/job")
     @PreAuthorize("hasRole('CANDIDATE')")
-    @Tag(name="Candidato", description = "Informações do candidato")
     @Operation(summary = "Listagem de vagas disponíveis para o candidato", description = "Essa função é resposável por listar todas as vagas disponíveis, baseada no filtro.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
@@ -84,6 +102,11 @@ public class CandidateController {
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('CANDIDATE')")
     @SecurityRequirement(name = "jwt_auth")
+    @Operation(summary = "Exclusão de candidatos.", description = "Essa função é resposável por deletar um candidato.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuário excluído com sucesso."),
+            @ApiResponse(responseCode = "400" ,description = "Erro inesperado.")
+    })
     public ResponseEntity<String> deleteCandidate(@RequestParam String username){
         try {
             this.deleteCandidateUseCase.execute(username);
@@ -92,4 +115,20 @@ public class CandidateController {
             return ResponseEntity.badRequest().body("Erro ao deletar o candidato!");
         }
     }
+
+    @PostMapping("/job/apply")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @SecurityRequirement(name = "jwt_auth")
+    @Operation(summary = "Inscrição do candidato em uma vaga.", description = "Essa função é resposável por realizar a inscrição de um candidato em uma vaga.")
+    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID idJob){
+        var idCandidate = request.getAttribute("candidate_id");
+
+        try {
+            var result = this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), idJob);
+            return ResponseEntity.ok().body(result);
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
 }

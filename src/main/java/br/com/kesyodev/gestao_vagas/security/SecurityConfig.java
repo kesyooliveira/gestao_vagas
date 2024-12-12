@@ -36,6 +36,7 @@ public class SecurityConfig {
                             .requestMatchers("/candidate/auth").permitAll()
                             .requestMatchers(SWAGGER_LIST).permitAll()
                             .requestMatchers("/candidate/job").permitAll()
+                            .requestMatchers("/candidate/job/apply").permitAll()
                             .requestMatchers("/candidate/delete").permitAll();
                     auth.anyRequest().authenticated();
                 })
