@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.UUID;
 
 import static br.com.kesyodev.gestao_vagas.utils.TestUtils.objectToJSON;
 
@@ -62,6 +63,18 @@ public class CreateJobControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
         System.out.println(result);
 
+    }
+
+    @Test
+    public void shouldNotBeAbleToCreateNewJobIfCompanyNotFound() throws Exception {
+
+        var createJobDTO = CreateJobDTO.builder().benefits("BENEFITS_TEST").description("DESCRIPTION_TEST").level("LEVEL_TEST").build();
+
+        mvc.perform(MockMvcRequestBuilders.post("/company/job/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJSON(createJobDTO))
+                .header("Authorization", TestUtils.generateToken(UUID.randomUUID(),"my-secret-key")))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 }
