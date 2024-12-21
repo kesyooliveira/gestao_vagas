@@ -1,12 +1,9 @@
 package br.com.kesyodev.gestao_vagas.modules.candidate.useCases;
 
 
-import br.com.kesyodev.gestao_vagas.modules.candidate.CandidateEntity;
 import br.com.kesyodev.gestao_vagas.modules.candidate.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class DeleteCandidateUseCase {

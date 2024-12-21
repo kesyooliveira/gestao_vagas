@@ -1,6 +1,5 @@
 package br.com.kesyodev.gestao_vagas.modules.company.controllers;
 
-import br.com.kesyodev.gestao_vagas.exceptions.UserFoundException;
 import br.com.kesyodev.gestao_vagas.modules.company.entities.CompanyEntity;
 import br.com.kesyodev.gestao_vagas.modules.company.useCases.CreateCompanyUseCase;
 import jakarta.validation.Valid;

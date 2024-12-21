@@ -1,6 +1,5 @@
 package br.com.kesyodev.gestao_vagas.modules.candidate;
 
-import org.hibernate.sql.Delete;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

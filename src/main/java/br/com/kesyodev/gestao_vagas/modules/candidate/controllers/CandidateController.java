@@ -1,9 +1,7 @@
 package br.com.kesyodev.gestao_vagas.modules.candidate.controllers;
 
 import br.com.kesyodev.gestao_vagas.modules.candidate.CandidateEntity;
-
 import br.com.kesyodev.gestao_vagas.modules.candidate.dto.ProfileCandidateResponseDTO;
-import br.com.kesyodev.gestao_vagas.modules.candidate.entity.ApplyJobEntity;
 import br.com.kesyodev.gestao_vagas.modules.candidate.useCases.*;
 import br.com.kesyodev.gestao_vagas.modules.company.entities.JobEntity;
 import io.swagger.v3.oas.annotations.Operation;
