@@ -19,6 +19,22 @@ public class CompanyController {
 
     @PostMapping("/")
     public ResponseEntity<Object> create(@Valid @RequestBody CompanyEntity companyEntity){
+//
+//
+//
+//        int size = 200000; // Número de iterações
+//        String[] largeArray = new String[size]; // Array para armazenar os objetos
+//
+//        // Loop que aloca uma string grande a cada iteração
+//        for (int i = 0; i < size; i++) {
+//            largeArray[i] = new String(new char[10000]); // String de 10.000 caracteres
+//        }
+//
+//        // Imprimir um valor para evitar otimizações do compilador
+//        System.out.println("Loop finalizado. Consumindo memória...");
+//
+//
+
         try {
             var result =  this.createCompanyUseCase.execute(companyEntity);
             return ResponseEntity.ok().body(result);
